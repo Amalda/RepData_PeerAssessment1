@@ -1,22 +1,19 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 Done by: Amal  
 Publish Date: 5-Mar-2015  
 
 ###Set Global Options
 Make sure all code will be available in the generated report
-```{r globalOptions,echo=TRUE}
+
+```r
 library("knitr")
 opts_chunk$set(echo=TRUE)
 ```
 
 ## Loading and preprocessing the data
 Make sure your data is available in same directory where the Rmd file is available
-```{r readData}
+
+```r
 #Read Data
 act <- read.csv("activity.csv")
 #Convert date column to Date
@@ -25,32 +22,55 @@ act$date <- as.Date(act$date,format="%Y-%m-%d")
 
 ## What is mean total number of steps taken per day?
 A histogram of the total number of steps taken each day:  
-```{r stepsPerDay}
+
+```r
 steps_day <- aggregate(act$steps, by=list(date=act$date), FUN=sum,na.rm=TRUE)
 colnames(steps_day) <- c("date","totalSteps")
 hist(steps_day$totalSteps,xlab="Number of Steps",main="Total Number of Steps Per Day",col="green",ylim=range(0,30))
 ```
 
+![](PA1_template_files/figure-html/stepsPerDay-1.png) 
+
 The mean and median of the total number of steps taken per day: 
-```{r meanMedian}
+
+```r
 stepsMean1 <- mean(steps_day$totalSteps,na.rm=TRUE)
 stepsMean1
+```
+
+```
+## [1] 9354.23
+```
+
+```r
 stepsMedian1 <- median(steps_day$totalSteps,na.rm=TRUE)
 stepsMedian1
 ```
 
+```
+## [1] 10395
+```
+
 ## What is the average daily activity pattern?
 A time series plot of the 5-minute interval and the average number of steps taken, averaged across all days: 
-```{r avarageDailyPattern}
+
+```r
 steps_interval <- aggregate(act$steps, by=list(interval=act$interval), FUN=mean,na.rm=TRUE)
 colnames(steps_interval) <- c("interval","steps")
 with(steps_interval,plot(interval,steps,type="l"),xlab="5-minute Interval",ylab="Number of Steps")
 title("Average number of steps taken versus the 5-minute intervals")
 ```
 
+![](PA1_template_files/figure-html/avarageDailyPattern-1.png) 
+
 The 5-minute interval which contains the maximum number of steps:
-```{r maxInterval}
+
+```r
 steps_interval$interval[steps_interval$steps==max(steps_interval$steps)]
+```
+
+```
+## [1] 835
 ```
 
 
@@ -58,13 +78,19 @@ steps_interval$interval[steps_interval$steps==max(steps_interval$steps)]
 ## Imputing missing values
 This section is about missing values. All NA values will be filled with the mean value for the 5-minute interval calculated above. Below are the detailed steps:  
 1.  Get The total number of missing values in the dataset 
-```{r noMissingValues}
+
+```r
 mvcount <- sum(is.na(act$steps))
 mvcount
 ```
 
+```
+## [1] 2304
+```
+
 2. Create new data set with NA values filled by the mean for that 5-minute interval
-```{r fillMissingValues}
+
+```r
 act_nomv <- act
 for (i in 1:nrow(act_nomv))
     if(is.na(act_nomv$steps[i]))
@@ -72,31 +98,47 @@ for (i in 1:nrow(act_nomv))
 ```
 
 3. Plot a histogram of the total number of steps taken each day after filling NA values:
-```{r plotAfterNAFilled}
+
+```r
 steps_day <- aggregate(act_nomv$steps, by=list(date=act_nomv$date), FUN=sum)
 colnames(steps_day) <- c("date","totalSteps")
 hist(steps_day$totalSteps,xlab="Number of Steps",main="Total Number of Steps Per Day",col="green",ylim=range(0,40))  
 ```
 
+![](PA1_template_files/figure-html/plotAfterNAFilled-1.png) 
+
 4. Calculate mean and median total number of steps taken per day after filling NA values
 
-```{r meanMedianAfter}
+
+```r
 stepsMean2 <- mean(steps_day$totalSteps)
 stepsMean2
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 stepsMedian2 <- median(steps_day$totalSteps)
 stepsMedian2
 ```
 
+```
+## [1] 10766.19
+```
+
 Mean and median changes after filling NA values as follows:  
 
-* Mean changes from `r stepsMean1` to `r stepsMean2`
-* Median changes from `r stepsMedian1` to `r stepsMedian2`
+* Mean changes from 9354.2295082 to 1.0766189\times 10^{4}
+* Median changes from 10395 to 1.0766189\times 10^{4}
 
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-```{r patterns}
+
+```r
 for (i in 1:nrow(act_nomv)){
     if(weekdays(act_nomv$date[i]) %in% c("Saturday", "Sunday"))
         act_nomv$daytype[i] <- "weekend"
@@ -110,4 +152,6 @@ colnames(steps_interval) <- c("daytype","interval","steps")
 library(lattice)
 xyplot(steps~interval | daytype, data = steps_interval, layout = c(1, 2),type="l",main="Avg No. of steps per 5-minute interval across weekdays and weekends",xlab="5-minute Interval",ylab="Average Number of Steps")
 ```
+
+![](PA1_template_files/figure-html/patterns-1.png) 
 
