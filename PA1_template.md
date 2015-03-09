@@ -24,7 +24,8 @@ act$date <- as.Date(act$date,format="%Y-%m-%d")
 A histogram of the total number of steps taken each day:  
 
 ```r
-steps_day <- aggregate(act$steps, by=list(date=act$date), FUN=sum,na.rm=TRUE)
+noNA <- act[!is.na(act$steps),]
+steps_day <- aggregate(noNA$steps, by=list(date=noNA$date), FUN=sum,na.rm=TRUE)
 colnames(steps_day) <- c("date","totalSteps")
 hist(steps_day$totalSteps,xlab="Number of Steps",main="Total Number of Steps Per Day",col="green",ylim=range(0,30))
 ```
@@ -39,7 +40,7 @@ stepsMean1
 ```
 
 ```
-## [1] 9354.23
+## [1] 10766.19
 ```
 
 ```r
@@ -48,14 +49,15 @@ stepsMedian1
 ```
 
 ```
-## [1] 10395
+## [1] 10765
 ```
 
 ## What is the average daily activity pattern?
 A time series plot of the 5-minute interval and the average number of steps taken, averaged across all days: 
+Note: using the dataset with no missing values
 
 ```r
-steps_interval <- aggregate(act$steps, by=list(interval=act$interval), FUN=mean,na.rm=TRUE)
+steps_interval <- aggregate(noNA$steps, by=list(interval=noNA$interval), FUN=mean,na.rm=TRUE)
 colnames(steps_interval) <- c("interval","steps")
 with(steps_interval,plot(interval,steps,type="l"),xlab="5-minute Interval",ylab="Number of Steps")
 title("Average number of steps taken versus the 5-minute intervals")
@@ -130,8 +132,8 @@ stepsMedian2
 
 Mean and median changes after filling NA values as follows:  
 
-* Mean changes from 9354.2295082 to 1.0766189\times 10^{4}
-* Median changes from 10395 to 1.0766189\times 10^{4}
+* Mean changes from 1.0766189\times 10^{4} to 1.0766189\times 10^{4}
+* Median changes from 10765 to 1.0766189\times 10^{4}
 
 
 
