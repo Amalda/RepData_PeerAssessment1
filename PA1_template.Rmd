@@ -18,12 +18,14 @@ opts_chunk$set(echo=TRUE)
 Make sure your data is available in same directory where the Rmd file is available
 ```{r readData}
 #Read Data
+unzip(zipfile="activity.zip")
 act <- read.csv("activity.csv")
 #Convert date column to Date
 act$date <- as.Date(act$date,format="%Y-%m-%d")
 ```
 
 ## What is mean total number of steps taken per day?
+* Note: This section ignores missing values  
 A histogram of the total number of steps taken each day:  
 ```{r stepsPerDay}
 noNA <- act[!is.na(act$steps),]
@@ -41,9 +43,10 @@ stepsMedian1
 ```
 
 ## What is the average daily activity pattern?
-A time series plot of the 5-minute interval and the average number of steps taken, averaged across all days: 
-Note: using the dataset with no missing values
+* Note: This section ignores missing values  
+A time series plot of the 5-minute interval and the average number of steps taken, averaged across all days:  
 ```{r avarageDailyPattern}
+#use filtered data set with no NAs
 steps_interval <- aggregate(noNA$steps, by=list(interval=noNA$interval), FUN=mean,na.rm=TRUE)
 colnames(steps_interval) <- c("interval","steps")
 with(steps_interval,plot(interval,steps,type="l"),xlab="5-minute Interval",ylab="Number of Steps")

@@ -66,13 +66,16 @@ opts_chunk$set(echo=TRUE)</code></pre>
 <h2>Loading and preprocessing the data</h2>
 <p>Make sure your data is available in same directory where the Rmd file is available</p>
 <pre class="r"><code>#Read Data
+unzip(zipfile=&quot;activity.zip&quot;)
 act &lt;- read.csv(&quot;activity.csv&quot;)
 #Convert date column to Date
 act$date &lt;- as.Date(act$date,format=&quot;%Y-%m-%d&quot;)</code></pre>
 </div>
 <div id="what-is-mean-total-number-of-steps-taken-per-day" class="section level2">
 <h2>What is mean total number of steps taken per day?</h2>
-<p>A histogram of the total number of steps taken each day:</p>
+<ul>
+<li>Note: This section ignores missing values<br />A histogram of the total number of steps taken each day:</li>
+</ul>
 <pre class="r"><code>noNA &lt;- act[!is.na(act$steps),]
 steps_day &lt;- aggregate(noNA$steps, by=list(date=noNA$date), FUN=sum,na.rm=TRUE)
 colnames(steps_day) &lt;- c(&quot;date&quot;,&quot;totalSteps&quot;)
@@ -88,8 +91,11 @@ stepsMedian1</code></pre>
 </div>
 <div id="what-is-the-average-daily-activity-pattern" class="section level2">
 <h2>What is the average daily activity pattern?</h2>
-<p>A time series plot of the 5-minute interval and the average number of steps taken, averaged across all days: Note: using the dataset with no missing values</p>
-<pre class="r"><code>steps_interval &lt;- aggregate(noNA$steps, by=list(interval=noNA$interval), FUN=mean,na.rm=TRUE)
+<ul>
+<li>Note: This section ignores missing values<br />A time series plot of the 5-minute interval and the average number of steps taken, averaged across all days:</li>
+</ul>
+<pre class="r"><code>#use filtered data set with no NAs
+steps_interval &lt;- aggregate(noNA$steps, by=list(interval=noNA$interval), FUN=mean,na.rm=TRUE)
 colnames(steps_interval) &lt;- c(&quot;interval&quot;,&quot;steps&quot;)
 with(steps_interval,plot(interval,steps,type=&quot;l&quot;),xlab=&quot;5-minute Interval&quot;,ylab=&quot;Number of Steps&quot;)
 title(&quot;Average number of steps taken versus the 5-minute intervals&quot;)</code></pre>
