@@ -81,8 +81,8 @@ steps_interval$interval[steps_interval$steps==max(steps_interval$steps)]
 
 
 ## Imputing missing values
-This section is about missing values. All NA values will be filled with the mean value for the 5-minute interval calculated above. Below are the detailed steps:  
-1.  Get The total number of missing values in the dataset 
+This section is about missing values. All NA values will be filled with the mean value for the 5-minute interval calculated above. Below are the detailed steps:   
+* Get The total number of missing values in the dataset 
 
 ```r
 mvcount <- sum(is.na(act$steps))
@@ -93,7 +93,7 @@ mvcount
 ## [1] 2304
 ```
 
-2. Create new data set with NA values filled by the mean for that 5-minute interval
+* Create new data set with NA values filled by the mean for that 5-minute interval
 
 ```r
 act_nomv <- act
@@ -102,7 +102,7 @@ for (i in 1:nrow(act_nomv))
         act_nomv$steps[i]<- steps_interval$steps[act_nomv$interval[i]==steps_interval$interval]
 ```
 
-3. Plot a histogram of the total number of steps taken each day after filling NA values:
+* Plot a histogram of the total number of steps taken each day after filling NA values:
 
 ```r
 steps_day <- aggregate(act_nomv$steps, by=list(date=act_nomv$date), FUN=sum)
@@ -112,7 +112,7 @@ hist(steps_day$totalSteps,xlab="Number of Steps",main="Total Number of Steps Per
 
 ![](PA1_template_files/figure-html/plotAfterNAFilled-1.png) 
 
-4. Calculate mean and median total number of steps taken per day after filling NA values
+* Calculate mean and median total number of steps taken per day after filling NA values
 
 
 ```r
